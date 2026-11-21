@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday 🎂</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #ff6fa5;
+    --pink-dark: #e0457f;
+    --gold: #ffc94d;
+    --mint: #6fe3c7;
+    --sky: #7cc6ff;
+    --ink: #3a2346;
+    --cream: #fff7f0;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', system-ui, sans-serif;
+    color: var(--ink);
+    background: linear-gradient(160deg, #ffe3ef 0%, #fff7f0 45%, #e6f6ff 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
+
+  /* ---------- Intro gift ---------- */
+  #intro {
+    position: fixed; inset: 0; z-index: 50;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 24px; text-align: center; padding: 24px;
+    background: linear-gradient(160deg, #ff8fb8, #ffb27a);
+    transition: opacity .8s ease, visibility .8s;
+  }
+  #intro.gone { opacity: 0; visibility: hidden; }
+  #intro h1 { color: #fff; font-size: clamp(1.6rem, 6vw, 2.6rem); text-shadow: 0 3px 0 rgba(0,0,0,.12); }
+  #intro p { color: #fff; opacity: .9; font-size: 1.05rem; }
+  .gift { font-size: 120px; cursor: pointer; user-select: none; animation: wiggle 2s ease-in-out infinite; filter: drop-shadow(0 12px 18px rgba(0,0,0,.2)); }
+  .gift.open { animation: pop .6s ease forwards; }
+  @keyframes wiggle { 0%,100%{transform:rotate(0)} 10%{transform:rotate(-8deg)} 20%{transform:rotate(8deg)} 30%{transform:rotate(-5deg)} 40%{transform:rotate(0)} }
+  @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(0); opacity:0} }
+
+  /* ---------- Layout ---------- */
+  main { max-width: 760px; margin: 0 auto; padding: 32px 18px 80px; }
+  section { margin: 0 0 64px; text-align: center; }
+  .hero { padding-top: 24px; }
+  .hero h1 {
+    font-size: clamp(2.2rem, 9vw, 4rem); line-height: 1.05;
+    background: linear-gradient(90deg, var(--pink), #ff9a5a, var(--gold), var(--pink));
+    background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 6s linear infinite;
+  }
+  @keyframes shimmer { to { background-position: 300% 0; } }
+  .hero .name { display: block; font-family: 'Caveat', cursive; font-size: clamp(3rem, 14vw, 6rem); }
+  .sub { margin-top: 10px; font-size: 1.1rem; opacity: .75; }
+  h2 { font-size: clamp(1.5rem, 5vw, 2rem); margin-bottom: 8px; }
+  .hint { font-size: .95rem; opacity: .65; margin-bottom: 20px; }
+  .btn {
+    font-family: inherit; font-size: 1rem; font-weight: 600;
+    border: none; border-radius: 999px; padding: 12px 22px; cursor: pointer;
+    background: var(--pink); color: #fff; box-shadow: 0 5px 0 var(--pink-dark);
+    transition: transform .1s, box-shadow .1s;
+  }
+  .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--pink-dark); }
+  .btn.alt { background: var(--sky); box-shadow: 0 5px 0 #4a9fe0; }
+  .btn.alt:active { box-shadow: 0 1px 0 #4a9fe0; }
+  .row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+
+  /* ---------- Cake ---------- */
+  .cake-wrap { position: relative; width: 260px; height: 250px; margin: 10px auto 0; }
+  .plate { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 260px; height: 22px; border-radius: 50%; background: #e9dff0; }
+  .tier { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 18px 18px 10px 10px; }
+  .tier.bottom { bottom: 12px; width: 220px; height: 90px; background: #ffb3cf; }
+  .tier.top { bottom: 96px; width: 160px; height: 70px; background: #fff0f6; }
+  .drip { position: absolute; top: 0; left: 0; right: 0; height: 22px; border-radius: 18px 18px 0 0; }
+  .tier.bottom .drip { background: radial-gradient(circle at 10px 22px, transparent 10px, #fff 11px) 0 0/28px 30px repeat-x; background-color: transparent; }
+  .tier.top .drip { background: radial-gradient(circle at 10px 22px, transparent 10px, var(--pink) 11px) 0 0/24px 30px repeat-x; }
+  .sprinkles { position: absolute; inset: 26px 10px 10px; }
+  .sprinkles i { position: absolute; width: 10px; height: 4px; border-radius: 4px; }
+  .candles { position: absolute; bottom: 166px; left: 50%; transform: translateX(-50%); display: flex; gap: 14px; }
+  .candle { position: relative; width: 12px; height: 44px; border-radius: 4px; cursor: pointer;
+    background: repeating-linear-gradient(45deg, #fff 0 6px, var(--sky) 6px 12px); }
+  .candle::before { content:''; position:absolute; top:-8px; left:5px; width:2px; height:8px; background:#555; }
+  .flame { position: absolute; top: -34px; left: -4px; width: 20px; height: 28px;
+    background: radial-gradient(ellipse at 50% 70%, #fff6c2 0 20%, var(--gold) 45%, #ff8a3d 75%, transparent 76%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: flicker .15s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+  .candle.out .flame { animation: none; opacity: 0; transform: scale(0); transition: all .3s; }
+  .smoke { position: absolute; top: -30px; left: 2px; width: 8px; height: 8px; border-radius: 50%; background: rgba(120,120,120,.4); opacity: 0; }
+  .candle.out .smoke { animation: smoke 1.2s ease-out forwards; }
+  @keyframes flicker { from{transform:scale(1) rotate(-2deg)} to{transform:scale(1.08,.95) rotate(2deg)} }
+  @keyframes smoke { 0%{opacity:.8; transform:translateY(0) scale(1)} 100%{opacity:0; transform:translateY(-40px) scale(3)} }
+  #wish { margin-top: 18px; font-family: 'Caveat', cursive; font-size: 2rem; min-height: 2.4rem; color: var(--pink-dark); }
+
+  /* ---------- Balloons ---------- */
+  .balloon-field { position: relative; height: 340px; border-radius: 24px; overflow: hidden;
+    background: linear-gradient(#cfeeff, #f3fbff); box-shadow: inset 0 0 0 3px rgba(255,255,255,.7); }
+  .balloon { position: absolute; bottom: -120px; width: 64px; height: 80px; cursor: pointer; user-select: none;
+    border-radius: 50% 50% 48% 48% / 55% 55% 45% 45%; animation: floatUp linear infinite; }
+  .balloon::after { content: ''; position: absolute; bottom: -38px; left: 50%; width: 1px; height: 38px; background: rgba(0,0,0,.25); }
+  .balloon::before { content: ''; position: absolute; top: 14px; left: 14px; width: 12px; height: 20px; border-radius: 50%; background: rgba(255,255,255,.45); }
+  .balloon.popped { animation: none !important; transform: scale(1.6); opacity: 0; transition: all .2s; }
+  @keyframes floatUp { from { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-260px) rotate(4deg); } to { transform: translateY(-500px) rotate(-4deg); } }
+  #balloonNote { margin-top: 16px; min-height: 3rem; font-size: 1.15rem; padding: 0 10px; transition: opacity .3s; }
+
+  /* ---------- Memory cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+  .card { perspective: 900px; height: 190px; cursor: pointer; }
+  .card-inner { position: relative; width: 100%; height: 100%; transition: transform .6s; transform-style: preserve-3d; }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; border-radius: 18px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; overflow: hidden;
+    box-shadow: 0 8px 20px rgba(58,35,70,.12); }
+  .front { background: var(--card); }
+  .front .emoji { font-size: 48px; }
+  .front .label { margin-top: 8px; font-weight: 600; }
+  .front img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .front img + .label { position: absolute; bottom: 0; left: 0; right: 0; margin: 0; padding: 8px; color: #fff;
+    background: linear-gradient(transparent, rgba(0,0,0,.6)); }
+  .back { background: linear-gradient(150deg, var(--pink), #ff9a5a); color: #fff; transform: rotateY(180deg); font-size: .98rem; line-height: 1.35; }
+
+  /* ---------- Fish game ---------- */
+  .pond { position: relative; height: 320px; border-radius: 24px; overflow: hidden; touch-action: manipulation;
+    background: linear-gradient(#58c3e8, #1d7fb5); box-shadow: inset 0 -20px 40px rgba(0,0,0,.15); }
+  .pond .bubble { position: absolute; border-radius: 50%; background: rgba(255,255,255,.35); animation: bubble linear infinite; }
+  @keyframes bubble { from { transform: translateY(0); opacity: .8; } to { transform: translateY(-340px); opacity: 0; } }
+  .fish { position: absolute; font-size: 40px; cursor: pointer; user-select: none; transition: transform .1s; line-height: 1; }
+  .fish.caught { animation: caught .4s ease forwards; }
+  @keyframes caught { to { transform: translateY(-60px) scale(1.5) rotate(20deg); opacity: 0; } }
+  .pond-ui { position: absolute; top: 10px; left: 12px; right: 12px; display: flex; justify-content: space-between;
+    color: #fff; font-weight: 700; font-size: 1.1rem; text-shadow: 0 2px 4px rgba(0,0,0,.3); pointer-events: none; }
+  .pond-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: center;
+    background: rgba(13,70,110,.45); color: #fff; padding: 20px; }
+  .pond-overlay p { font-size: 1.15rem; max-width: 420px; }
+
+  /* ---------- Letter ---------- */
+  .letter { position: relative; text-align: left; background: #fffdf8; border-radius: 6px; padding: 34px 26px 30px;
+    box-shadow: 0 14px 30px rgba(58,35,70,.15); font-family: 'Caveat', cursive; font-size: 1.6rem; line-height: 1.4;
+    background-image: repeating-linear-gradient(transparent 0 calc(1.4em - 1px), #f1dfe6 calc(1.4em - 1px) 1.4em);
+    min-height: 220px; white-space: pre-wrap; }
+  .letter .cursor { display: inline-block; width: 2px; height: 1.1em; background: var(--ink); vertical-align: -3px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+
+  /* ---------- Dance party ---------- */
+  #danceBtn { position: fixed; right: 16px; bottom: 16px; z-index: 40; font-size: 1.6rem; width: 58px; height: 58px; padding: 0; border-radius: 50%; }
+  body.party { animation: disco 1.2s linear infinite; }
+  body.party section h2, body.party .hero h1 { animation: bounce .45s ease-in-out infinite alternate; }
+  body.party .card, body.party .gift-mini { animation: sway .6s ease-in-out infinite alternate; }
+  @keyframes disco { to { filter: hue-rotate(360deg); } }
+  @keyframes bounce { to { transform: translateY(-8px) scale(1.03); } }
+  @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+  #partyToast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%) translateY(20px); opacity: 0;
+    background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 600; z-index: 41;
+    transition: all .3s; pointer-events: none; white-space: nowrap; }
+  #partyToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+
+<!-- Intro -->
+<div id="intro">
+  <h1 id="introTitle">This for you Dee ❤️</h1>
+  <div class="gift" id="gift" role="button" aria-label="Open the gift">🎁</div>
+  <p>tap the present</p>
+</div>
+
+<main>
+  <!-- Hero -->
+  <section class="hero reveal">
+    <h1>Happy Birthday<span class="name" id="heroName">Zoe</span></h1>
+    <p class="sub" id="heroSub">scroll down, there's stuff to do 👇</p>
+  </section>
+
+  <!-- Cake -->
+  <section class="reveal">
+    <h2>🎂 Blow out the candles</h2>
+    <p class="hint">Tap each candle to blow it out</p>
+    <div class="cake-wrap">
+      <div class="candles" id="candles"></div>
+      <div class="tier top"><div class="drip"></div><div class="sprinkles"></div></div>
+      <div class="tier bottom"><div class="drip"></div><div class="sprinkles"></div></div>
+      <div class="plate"></div>
+    </div>
+    <div id="wish"></div>
+    <div class="row">
+      <button class="btn" id="relightBtn" style="display:none">🔥 Relight</button>
+    </div>
+  </section>
+
+  <!-- Balloons -->
+  <section class="reveal">
+    <h2>🎈 Pop the balloons</h2>
+    <p class="hint">Each one has a little note inside</p>
+    <div class="balloon-field" id="balloonField"></div>
+    <div id="balloonNote"></div>
+  </section>
+
+  <!-- Memory cards -->
+  <section class="reveal">
+    <h2>📸 Some good ones</h2>
+    <p class="hint">Tap a card to flip it</p>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <!-- Fish game -->
+  <section class="reveal">
+    <h2>🎣 Catch the fish</h2>
+    <p class="hint">We never made it out fishing, so here's the warm-up round</p>
+    <div class="pond" id="pond">
+      <div class="pond-ui"><span id="score">🐟 0</span><span id="timer">⏱ 10</span></div>
+      <div class="pond-overlay" id="pondOverlay">
+        <p>Tap as many fish as you can in 10 seconds. Watch out for the 🦈</p>
+        <button class="btn" id="startGame">Start</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Letter -->
+  <section class="reveal" id="letterSection">
+    <h2>💌 One more thing</h2>
+    <p class="hint">&nbsp;</p>
+    <div class="letter" id="letter"><span class="cursor"></span></div>
+    <div class="row" style="margin-top:28px"><button class="btn" id="restartBtn">🎁 Start over</button></div>
+  </section>
+
+</main>
+
+<button class="btn" id="danceBtn" aria-label="Dance party">🪩</button>
+<div id="partyToast">Dance party mode 💃</div>
+
+<script>
+/* =========================================================
+   ✏️  EDIT EVERYTHING IN THIS CONFIG BLOCK
+   Replace the [brackets] with your own stuff.
+   ========================================================= */
+const CONFIG = {
+  name: "Zoe",
+  introTitle: "This for you Dee ❤️",
+  heroSub: "scroll down, there's stuff to do 👇",
+
+  candles: 5,   // how many candles on the cake
+
+  // Little notes hidden in balloons (one per balloon)
+  balloonNotes: [
+    "You make every room louder (in a good way) 🎉",
+    "I still find your hairs in my room 😂",
+    "Still think you're the best dancer on the team 💃",
+    "You still motivate me to work hard 💪",
+    "I still think about our awkward froyo gas station date",
+    "Hope this year treats you right ✨",
+  ],
+
+  // Flip cards. Put photos in an "images" folder and set img: "images/pic1.jpg"
+  // Leave img as "" to show the emoji instead.
+  memories: [
+    { emoji: "💪", label: "Click me", img: "", back: "Keep working hard." },
+    { emoji: "⭐", label: "Click me", img: "", back: "I'm proud of you." },
+    { emoji: "🥢", label: "Click me", img: "", back: "So asian." },
+    { emoji: "💭", label: "Click me", img: "", back: "Missin you." },
+  ],
+
+  // The letter at the end. Keep it light. \n = new line.
+  letter:
+`Hey Zoe,
+
+Happy birthday! I hope today is a good one.
+
+I hope you are doing well and that you are happy. I know you are killing it dancing.
+
+Hope this year is your best one yet.
+
+- Lewis`,
+
+};
+/* ========================================================= */
+
+const $ = (s) => document.querySelector(s);
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+const rand = (a, b) => Math.random() * (b - a) + a;
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+// Fill in text from config
+document.title = `Happy Birthday ${CONFIG.name} 🎂`;
+$('#introTitle').textContent = CONFIG.introTitle;
+$('#heroName').textContent = CONFIG.name;
+$('#heroSub').textContent = CONFIG.heroSub;
+
+/* ---------- Confetti ---------- */
+const canvas = $('#confetti');
+const ctx = canvas.getContext('2d');
+let pieces = [];
+const COLORS = ['#ff6fa5', '#ffc94d', '#6fe3c7', '#7cc6ff', '#b88cff', '#ff9a5a'];
+function sizeCanvas() { canvas.width = innerWidth * devicePixelRatio; canvas.height = innerHeight * devicePixelRatio; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); }
+sizeCanvas(); addEventListener('resize', sizeCanvas);
+
+function confetti(count = 140, x = innerWidth / 2, y = innerHeight / 3) {
+  for (let i = 0; i < count; i++) {
+    pieces.push({
+      x, y, vx: rand(-7, 7), vy: rand(-12, -3), g: rand(.18, .32),
+      w: rand(6, 11), h: rand(8, 15), r: rand(0, Math.PI), vr: rand(-.2, .2),
+      c: pick(COLORS), life: 0, shape: Math.random() < .3 ? 'circle' : 'rect',
+    });
+  }
+  if (!animating) { animating = true; requestAnimationFrame(tick); }
+}
+let animating = false;
+function tick() {
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  pieces.forEach(p => {
+    p.vy += p.g; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life++;
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c;
+    if (p.shape === 'circle') { ctx.beginPath(); ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2); ctx.fill(); }
+    else ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.r)));
+    ctx.restore();
+  });
+  pieces = pieces.filter(p => p.y < innerHeight + 40 && p.life < 400);
+  if (pieces.length) requestAnimationFrame(tick); else { animating = false; ctx.clearRect(0, 0, innerWidth, innerHeight); }
+}
+
+/* ---------- Intro ---------- */
+$('#gift').addEventListener('click', () => {
+  $('#gift').classList.add('open');
+  confetti(220);
+  setTimeout(() => { $('#intro').classList.add('gone'); revealCheck(); }, 550);
+});
+
+/* ---------- Scroll reveal ---------- */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      if (e.target.id === 'letterSection') startLetter();
+    }
+  });
+}, { threshold: .2 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+function revealCheck() { document.querySelector('.hero').classList.add('in'); }
+
+/* ---------- Cake ---------- */
+const candlesEl = $('#candles');
+const WISHES = ['Make a wish ✨', 'Wish locked in 🔒', "Don't tell anyone what it was 🤫"];
+function buildCandles() {
+  candlesEl.innerHTML = '';
+  for (let i = 0; i < CONFIG.candles; i++) {
+    const c = document.createElement('div');
+    c.className = 'candle';
+    c.innerHTML = '<div class="flame"></div><div class="smoke"></div>';
+    c.addEventListener('click', () => blowOut(c));
+    candlesEl.appendChild(c);
+  }
+  $('#wish').textContent = '';
+  $('#relightBtn').style.display = 'none';
+}
+function blowOut(c) {
+  if (c.classList.contains('out')) return;
+  c.classList.add('out');
+  checkCandles();
+}
+function checkCandles() {
+  const left = candlesEl.querySelectorAll('.candle:not(.out)').length;
+  if (left === 0) {
+    const r = candlesEl.getBoundingClientRect();
+    confetti(200, r.left + r.width / 2, r.top);
+    $('#wish').textContent = pick(WISHES);
+    $('#relightBtn').style.display = '';
+  }
+}
+$('#relightBtn').addEventListener('click', buildCandles);
+
+// Sprinkles
+document.querySelectorAll('.sprinkles').forEach(s => {
+  for (let i = 0; i < 18; i++) {
+    const d = document.createElement('i');
+    d.style.left = rand(2, 92) + '%'; d.style.top = rand(5, 85) + '%';
+    d.style.background = pick(COLORS); d.style.transform = `rotate(${rand(0, 180)}deg)`;
+    s.appendChild(d);
+  }
+});
+buildCandles();
+
+/* ---------- Balloons ---------- */
+const field = $('#balloonField');
+let noteIdx = 0;
+const BALLOON_COLORS = ['#ff6fa5', '#ffc94d', '#6fe3c7', '#7cc6ff', '#b88cff', '#ff9a5a'];
+function spawnBalloon() {
+  const b = document.createElement('div');
+  b.className = 'balloon';
+  b.style.left = rand(4, 82) + '%';
+  b.style.background = pick(BALLOON_COLORS);
+  b.style.animationDuration = rand(7, 11) + 's';
+  b.addEventListener('click', (e) => {
+    if (b.classList.contains('popped')) return;
+    b.classList.add('popped');
+    confetti(40, e.clientX, e.clientY);
+    const note = $('#balloonNote');
+    note.style.opacity = 0;
+    setTimeout(() => { note.textContent = CONFIG.balloonNotes[noteIdx % CONFIG.balloonNotes.length]; note.style.opacity = 1; noteIdx++; }, 150);
+    setTimeout(() => b.remove(), 300);
+  });
+  b.addEventListener('animationend', () => b.remove());
+  field.appendChild(b);
+}
+for (let i = 0; i < 4; i++) setTimeout(spawnBalloon, i * 700);
+setInterval(() => { if (field.childElementCount < 7) spawnBalloon(); }, 1300);
+
+/* ---------- Memory cards ---------- */
+const cardsEl = $('#cards');
+CONFIG.memories.forEach(m => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  const front = m.img
+    ? `<img src="${m.img}" alt=""><div class="label">${m.label}</div>`
+    : `<div class="emoji">${m.emoji}</div><div class="label">${m.label}</div>`;
+  card.innerHTML = `<div class="card-inner"><div class="face front">${front}</div><div class="face back">${m.back}</div></div>`;
+  card.addEventListener('click', () => card.classList.toggle('flipped'));
+  cardsEl.appendChild(card);
+});
+
+/* ---------- Fish game ---------- */
+const pond = $('#pond');
+let score = 0, timeLeft = 10, gameOn = false, spawnTimer, clockTimer;
+const FISH = ['🐟', '🐠', '🐡', '🐟', '🐠'];
+
+// Background bubbles
+for (let i = 0; i < 12; i++) {
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  const s = rand(4, 12);
+  Object.assign(bub.style, { width: s + 'px', height: s + 'px', left: rand(0, 100) + '%', bottom: '-20px',
+    animationDuration: rand(4, 9) + 's', animationDelay: rand(0, 6) + 's' });
+  pond.appendChild(bub);
+}
+
+function spawnFish() {
+  if (!gameOn) return;
+  const f = document.createElement('div');
+  const shark = Math.random() < .15;
+  f.className = 'fish';
+  f.textContent = shark ? '🦈' : pick(FISH);
+  const fromLeft = Math.random() < .5;
+  const w = pond.clientWidth, h = pond.clientHeight;
+  const y = rand(50, h - 60);
+  const dur = rand(1800, 3400) - Math.min(score * 40, 800);
+  f.style.top = y + 'px';
+  f.style.left = (fromLeft ? -50 : w + 10) + 'px';
+  if (fromLeft) f.style.transform = 'scaleX(-1)'; // emoji fish face left by default
+  pond.appendChild(f);
+  const anim = f.animate(
+    [{ left: (fromLeft ? -50 : w + 10) + 'px' }, { left: (fromLeft ? w + 10 : -50) + 'px' }],
+    { duration: dur, easing: 'linear' }
+  );
+  anim.onfinish = () => f.remove();
+  f.addEventListener('pointerdown', (e) => {
+    if (!gameOn || f.classList.contains('caught')) return;
+    anim.pause();
+    f.style.left = getComputedStyle(f).left;
+    f.classList.add('caught');
+    if (shark) { score = Math.max(0, score - 3); flashScore('−3 🦈'); }
+    else { score++; confetti(12, e.clientX, e.clientY); }
+    $('#score').textContent = '🐟 ' + score;
+    setTimeout(() => f.remove(), 400);
+  });
+}
+function flashScore(t) {
+  const s = $('#score'); const old = s.textContent; s.textContent = t;
+  setTimeout(() => { s.textContent = '🐟 ' + score; }, 600);
+}
+function startGame() {
+  pond.querySelectorAll('.fish').forEach(f => f.remove());
+  score = 0; timeLeft = 10; gameOn = true;
+  $('#score').textContent = '🐟 0'; $('#timer').textContent = '⏱ 10';
+  $('#pondOverlay').style.display = 'none';
+  spawnTimer = setInterval(spawnFish, 550);
+  clockTimer = setInterval(() => {
+    timeLeft--; $('#timer').textContent = '⏱ ' + timeLeft;
+    if (timeLeft <= 0) endGame();
+  }, 1000);
+}
+function endGame() {
+  gameOn = false; clearInterval(spawnTimer); clearInterval(clockTimer);
+  let msg;
+  if (score >= 10) msg = `${score} fish?! Okay, you're officially the better angler 🏆`;
+  else if (score >= 6) msg = `${score} fish. Respectable. Very respectable 🎣`;
+  else if (score >= 3) msg = `${score} fish. Solid start, rookie 😄`;
+  else msg = `${score} fish… the fish win this round 🐟`;
+  const ov = $('#pondOverlay');
+  ov.innerHTML = `<p>${msg}</p><button class="btn" id="startGame">Play again</button>`;
+  ov.style.display = 'flex';
+  $('#startGame').addEventListener('click', startGame);
+  if (score >= 6) { const r = pond.getBoundingClientRect(); confetti(150, r.left + r.width / 2, r.top + 40); }
+}
+$('#startGame').addEventListener('click', startGame);
+
+/* ---------- Letter (typewriter) ---------- */
+let letterStarted = false;
+function startLetter() {
+  if (letterStarted) return; letterStarted = true;
+  const el = $('#letter'); const text = CONFIG.letter; let i = 0;
+  const cursor = '<span class="cursor"></span>';
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const type = () => {
+    i++;
+    el.innerHTML = esc(text.slice(0, i)) + cursor;
+    if (i < text.length) setTimeout(type, text[i - 1] === '\n' ? 220 : rand(25, 55));
+    else setTimeout(() => confetti(120), 400);
+  };
+  setTimeout(type, 500);
+}
+
+/* ---------- Start over ---------- */
+$('#restartBtn').addEventListener('click', () => { window.scrollTo(0, 0); location.reload(); });
+
+/* ---------- Dance party ---------- */
+let party = false;
+$('#danceBtn').addEventListener('click', () => {
+  party = !party;
+  document.body.classList.toggle('party', party);
+  const t = $('#partyToast');
+  t.textContent = party ? 'Dance party mode 💃' : 'Party over (for now)';
+  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1400);
+  if (party) confetti(160);
+});
+</script>
+</body>
+</html>
